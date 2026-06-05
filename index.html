@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Anu Surya — Project Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --surface: #181818;
+      --border: rgba(255,255,255,0.08);
+      --accent: #ff6b1a;
+      --accent-light: #ff8c47;
+      --accent-dim: rgba(255,107,26,0.12);
+      --accent2: #e8c98a;
+      --text: #ede8e2;
+      --muted: #7a7570;
+      --heading-font: 'Cormorant Garamond', serif;
+      --body-font: 'DM Sans', sans-serif;
+      --mono-font: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NOISE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.45;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.4rem 4rem;
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: var(--heading-font);
+      font-size: 1.5rem;
+      font-weight: 300;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-social { display: flex; gap: 1.2rem; align-items: center; }
+    .nav-social a {
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .nav-social a:hover { color: var(--accent); transform: translateY(-2px); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 8rem 4rem 4rem;
+      overflow: hidden;
+    }
+    .hero-grid-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,107,26,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,107,26,0.04) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,107,26,0.07) 0%, transparent 65%);
+      top: -180px; right: -140px;
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,201,138,0.06) 0%, transparent 70%);
+      bottom: 0; left: 15%;
+      pointer-events: none;
+    }
+    .hero-content { position: relative; max-width: 860px; }
+
+    .hero-eyebrow {
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: var(--accent);
+    }
+    .hero-title {
+      font-family: var(--heading-font);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      margin-bottom: 0.3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-subtitle {
+      font-family: var(--heading-font);
+      font-size: clamp(1.4rem, 2.8vw, 2.6rem);
+      font-weight: 300;
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.55s forwards;
+    }
+    .hero-desc {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.85;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+    .hero-desc a { color: var(--accent); text-decoration: none; }
+    .hero-desc a:hover { text-decoration: underline; }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.85s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--accent-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(255,107,26,0.3);
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .hero-stats {
+      position: absolute;
+      right: 4rem;
+      bottom: 4rem;
+      display: flex;
+      gap: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: var(--heading-font);
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+    }
+    .stat-label {
+      font-family: var(--mono-font);
+      font-size: 0.63rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      display: block;
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 7rem 4rem; }
+    .section-label {
+      font-family: var(--mono-font);
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block;
+      width: 30px; height: 1px;
+      background: var(--accent);
+    }
+    .section-title {
+      font-family: var(--heading-font);
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .section-title em { font-style: italic; color: var(--accent2); }
+
+    /* ── PORTFOLIO ── */
+    #portfolio { background: var(--bg2); }
+    .portfolio-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: end;
+      margin-bottom: 4rem;
+    }
+    .portfolio-desc { color: var(--muted); font-size: 1rem; line-height: 1.85; }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+    }
+    .portfolio-item {
+      position: relative;
+      overflow: hidden;
+      background: var(--surface);
+      aspect-ratio: 4/3;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .portfolio-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.65s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.4s;
+      filter: grayscale(20%) brightness(0.75);
+    }
+    .portfolio-item:hover img {
+      transform: scale(1.09);
+      filter: grayscale(0%) brightness(0.55);
+    }
+    .portfolio-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.6rem;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 55%);
+      transition: transform 0.3s;
+    }
+    .portfolio-tag {
+      font-family: var(--mono-font);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .portfolio-name {
+      font-family: var(--heading-font);
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: #fff;
+      line-height: 1.2;
+    }
+    .portfolio-arrow {
+      position: absolute;
+      top: 1.1rem; right: 1.1rem;
+      width: 34px; height: 34px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      color: #fff;
+      opacity: 0;
+      transform: translate(4px,-4px);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .portfolio-item:hover .portfolio-arrow { opacity: 1; transform: translate(0,0); }
+
+    /* placeholder for missing imgs */
+    .portfolio-item .img-placeholder {
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      font-size: 2rem;
+      color: var(--accent);
+      opacity: 0.4;
+    }
+
+    /* ── ABOUT ── */
+    #about { background: var(--bg); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 5rem;
+      align-items: start;
+      margin-top: 3rem;
+    }
+    .about-left { position: sticky; top: 8rem; }
+    .about-avatar-wrap {
+      position: relative;
+      width: fit-content;
+    }
+    .about-avatar-wrap::before {
+      content: '';
+      position: absolute;
+      inset: -8px;
+      border: 1px solid var(--accent);
+      opacity: 0.25;
+      transform: rotate(2deg);
+    }
+    .about-avatar-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -16px;
+      border: 1px solid var(--accent2);
+      opacity: 0.12;
+      transform: rotate(-1.5deg);
+    }
+    .about-avatar {
+      width: 280px; height: 340px;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      filter: grayscale(10%);
+    }
+    .about-handle { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0; }
+    .about-handle a {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--mono-font);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .about-handle a:hover { color: var(--accent); }
+    .about-handle a i { width: 14px; color: var(--accent); }
+
+    .about-text p {
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.9;
+      margin-bottom: 1.5rem;
+    }
+    .about-text p strong { color: var(--text); font-weight: 500; }
+    .about-highlights {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin-top: 2.5rem;
+      background: var(--border);
+    }
+    .highlight-card { background: var(--surface); padding: 1.4rem; }
+    .highlight-num {
+      font-family: var(--heading-font);
+      font-size: 2.3rem;
+      font-weight: 300;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+    }
+    .highlight-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+    .skills-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 2rem;
+    }
+    .skill-pill {
+      font-family: var(--mono-font);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.32rem 0.85rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--bg2); text-align: center; }
+    .contact-inner { max-width: 620px; margin: 0 auto; }
+    .contact-cta {
+      font-family: var(--heading-font);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+      margin-bottom: 1.2rem;
+    }
+    .contact-cta em { font-style: italic; color: var(--accent); }
+    .contact-sub { color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
+    .contact-email {
+      display: block;
+      font-family: var(--heading-font);
+      font-size: 1.3rem;
+      color: var(--accent2);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      margin-bottom: 2.5rem;
+      transition: color 0.2s;
+    }
+    .contact-email:hover { color: var(--accent); }
+    .contact-social {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .contact-social a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px; height: 44px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .contact-social a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: var(--mono-font);
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .footer-back {
+      font-family: var(--mono-font);
+      font-size: 0.63rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.2s;
+    }
+    .footer-back:hover { color: var(--accent); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed;
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%,-50%);
+      transition: width 0.3s, height 0.3s, opacity 0.3s;
+      mix-blend-mode: screen;
+    }
+    .cursor.large { width: 40px; height: 40px; opacity: 0.25; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #hero { padding: 7rem 1.5rem 4rem; }
+      .portfolio-grid { grid-template-columns: 1fr 1fr; }
+      .portfolio-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .about-left { position: static; }
+      .about-avatar { width: 200px; height: 240px; }
+      .hero-stats { position: static; display: flex; gap: 2rem; margin-top: 3rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .about-highlights { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Anu <span>Surya</span></a>
+  <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank" rel="noopener" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com/AnuSuryan/Portfolio" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="mailto:anusurya2403@gmail.com" title="Email"><i class="far fa-envelope"></i></a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Project Manager &amp; Strategy Lead</p>
+    <h1 class="hero-title">Hi, I'm <em>Anu.</em></h1>
+    <p class="hero-subtitle">Building what matters, managing what moves.</p>
+    <p class="hero-desc">
+      A results-driven management professional with 8 years of experience across airlines, logistics, SaaS, blockchain, and luxury. Currently based in <strong style="color:var(--text)">Paris, France</strong> — open to relocation.
+      Reach me at <a href="mailto:anusurya2403@gmail.com">anusurya2403@gmail.com</a> or on <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank">LinkedIn</a>.
+    </p>
+    <div class="hero-actions">
+      <a href="#portfolio" class="btn-primary"><i class="fas fa-arrow-down"></i> View Portfolio</a>
+      <a href="mailto:anusurya2403@gmail.com" class="btn-outline"><i class="far fa-envelope"></i> Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">8</span>
+      <span class="stat-label">Years Exp.</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">+20%</span>
+      <span class="stat-label">Ops Efficiency</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">2×</span>
+      <span class="stat-label">ROI Doubled</span>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="portfolio-intro reveal">
+    <div>
+      <p class="section-label">Selected Work</p>
+      <h2 class="section-title">Projects that <em>drive results</em></h2>
+    </div>
+    <p class="portfolio-desc">Loyalty management in airlines &amp; hospitality, product management, customer success, luxury brands, and blockchain — each project reflects a different dimension of my expertise.</p>
+  </div>
+
+  <div class="portfolio-grid">
+
+    <!-- 1. Ticket to Loyalty — airplane window, golden light -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Airline%20Loyalty/Airline%20loyalty%20Program%20Evolution.pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80&auto=format&fit=crop" alt="Ticket to Loyalty" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Airline Loyalty</span>
+        <span class="portfolio-name">Ticket to Loyalty</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 2. Airline Loyalty Trends — airport terminal, motion blur -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Airline%20Loyalty/Key%20Trends%20_Airlines.pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1569154941061-e231b4aa8502?w=800&q=80&auto=format&fit=crop" alt="Airline Loyalty Trends" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Airline Loyalty</span>
+        <span class="portfolio-name">Loyalty Trends</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 3. Luxury Airline Strategies — business class cabin, premium feel -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Airline%20Loyalty/Luxury%20Airline%20Strategies%20(1).pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1540339832862-474599807836?w=800&q=80&auto=format&fit=crop" alt="Luxury Airline Strategies" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Strategy</span>
+        <span class="portfolio-name">Luxury Airline Strategies</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 4. Europcar Loyalty — open road, car rental feel -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/tree/main/Loyalty%20Business%20Model" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80&auto=format&fit=crop" alt="Europcar Loyalty Program" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Hospitality / Car Rental</span>
+        <span class="portfolio-name">Europcar Loyalty Program</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 5. Product Management Approach — strategy / planning desk -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Product%20Management/Product%20management%20Approach%20.pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&q=80&auto=format&fit=crop" alt="Product Management Approach" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Product</span>
+        <span class="portfolio-name">Product Management Approach</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 6. Luxury Brand Study LVMH — luxury fashion / boutique -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Luxury%20Industry/Luxury%20LVMH%20%20(1).pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80&auto=format&fit=crop" alt="Luxury Brand Study" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Luxury</span>
+        <span class="portfolio-name">Luxury Brand Study — LVMH</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 7. Maritime SaaS — container ship at sea -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Product%20Management/SECURELOAD%20PM.pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1517825738774-7de9363ef735?w=800&q=80&auto=format&fit=crop" alt="Maritime SaaS Product Management" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">SaaS / Maritime</span>
+        <span class="portfolio-name">Maritime SaaS Product</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 8. Blockchain — crypto / data network visual -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Blockchain/Blockchain%20Projects%20.pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&q=80&auto=format&fit=crop" alt="Blockchain Projects" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Blockchain</span>
+        <span class="portfolio-name">Blockchain Projects</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+    <!-- 9. Customer Success KPIs — team / data dashboard -->
+    <a class="portfolio-item reveal" href="https://github.com/AnuSuryan/Portfolio/blob/main/Luxury%20Industry/Luxury%20LVMH%20%20(1).pdf" target="_blank" rel="noopener">
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80&auto=format&fit=crop" alt="Customer Success KPIs" loading="lazy" />
+      <div class="portfolio-overlay">
+        <span class="portfolio-tag">Customer Success</span>
+        <span class="portfolio-name">Customer Success KPIs</span>
+      </div>
+      <div class="portfolio-arrow"><i class="fas fa-arrow-up-right-from-square"></i></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">Background</p>
+  <h2 class="section-title reveal">The person <em>behind the work</em></h2>
+  <div class="about-grid">
+    <div class="about-left reveal">
+      <div class="about-avatar-wrap">
+        <img
+          src="https://anusuryan.github.io/BeyondManagement.github.io/images/Images.jpeg"
+          alt="Anu Surya"
+          class="about-avatar"
+          onerror="this.style.background='#1a1a1a';this.style.minHeight='340px'"
+        />
+      </div>
+      <div class="about-handle">
+        <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank" rel="noopener">
+          <i class="fab fa-linkedin"></i> linkedin.com/in/anu-surya
+        </a>
+        <a href="https://github.com/AnuSuryan/Portfolio" target="_blank" rel="noopener">
+          <i class="fab fa-github"></i> github.com/AnuSuryan
+        </a>
+        <a href="mailto:anusurya2403@gmail.com">
+          <i class="far fa-envelope"></i> anusurya2403@gmail.com
+        </a>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <p>I'm a <strong>Master's graduate in Global Business Management</strong> with 8 years of cross-industry experience spanning product management, project management, and business analysis.</p>
+      <p>My passion lies in building <strong>customer-centric solutions</strong> across tourism, logistics, telecom, blockchain, and banking — always grounded in Agile methodologies and the Scrum framework.</p>
+      <p>I've enhanced <strong>customer retention by 15%</strong> through loyalty benchmarks and premiumization strategies, while streamlining operations to boost efficiency by <strong>20%</strong>. Managing projects in Maritime Industry 4.0, I helped drive a <strong>$350K annual profit increase</strong> and doubled ROI by optimizing SaaS solutions and improving user engagement.</p>
+      <p>I thrive in dynamic environments — bridging strategy, people, and execution to deliver results that matter.</p>
+      <div class="about-highlights">
+        <div class="highlight-card">
+          <span class="highlight-num">+15%</span>
+          <span class="highlight-desc">Customer retention via loyalty &amp; premiumization</span>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-num">+20%</span>
+          <span class="highlight-desc">Operational efficiency gains</span>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-num">$350K</span>
+          <span class="highlight-desc">Annual profit increase — Maritime Industry 4.0</span>
+        </div>
+        <div class="highlight-card">
+          <span class="highlight-num">2×</span>
+          <span class="highlight-desc">ROI doubled via SaaS &amp; user engagement</span>
+        </div>
+      </div>
+      <div class="skills-row">
+        <span class="skill-pill">Agile / Scrum</span>
+        <span class="skill-pill">Product Management</span>
+        <span class="skill-pill">Loyalty Strategy</span>
+        <span class="skill-pill">Stakeholder Management</span>
+        <span class="skill-pill">Business Analysis</span>
+        <span class="skill-pill">SaaS</span>
+        <span class="skill-pill">Blockchain</span>
+        <span class="skill-pill">Customer Success</span>
+        <span class="skill-pill">Strategic Planning</span>
+        <span class="skill-pill">Data-Driven</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <p class="section-label" style="justify-content:center">Let's Connect</p>
+    <h2 class="contact-cta">Ready to work <em>together?</em></h2>
+    <p class="contact-sub">Open to full-time opportunities globally. Based in Paris, willing to relocate. Let's build something meaningful.</p>
+    <a href="mailto:anusurya2403@gmail.com" class="contact-email">anusurya2403@gmail.com</a>
+    <a href="mailto:anusurya2403@gmail.com" class="btn-primary" style="display:inline-flex;margin:0 auto;">
+      <i class="far fa-envelope"></i> Send an Email
+    </a>
+    <div class="contact-social">
+      <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank" rel="noopener" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href="https://github.com/AnuSuryan/Portfolio" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="mailto:anusurya2403@gmail.com" title="Email"><i class="far fa-envelope"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2025 Anu Surya. All rights reserved.</span>
+  <a href="#hero" class="footer-back"><i class="fas fa-arrow-up"></i> Back to top</a>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button, .portfolio-item').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('large'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
+  });
+
+  // Scroll reveal with stagger
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = (i * 0.04) + 's';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
