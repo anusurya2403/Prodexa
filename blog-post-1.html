@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Paradox of Meetings | Anu Surya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0a; --bg2: #111111; --surface: #181818;
+      --border: rgba(255,255,255,0.08);
+      --accent: #ff6b1a; --accent-light: #ff8c47;
+      --accent2: #e8c98a; --text: #ede8e2; --muted: #7a7570;
+      --heading-font: 'Cormorant Garamond', serif;
+      --body-font: 'DM Sans', sans-serif;
+      --mono-font: 'Space Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body-font); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.45;
+    }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 4rem; background: rgba(10,10,10,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--heading-font); font-size: 1.5rem; font-weight: 300; color: var(--text); text-decoration: none; letter-spacing: 0.05em; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--mono-font); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-social { display: flex; gap: 1.2rem; align-items: center; }
+    .nav-social a { color: var(--muted); font-size: 0.9rem; transition: color 0.2s, transform 0.2s; text-decoration: none; }
+    .nav-social a:hover { color: var(--accent); transform: translateY(-2px); }
+
+    /* BLOG HEADER */
+    .blog-header { position: relative; z-index: 1; padding: 9rem 4rem 4rem; max-width: 900px; margin: 0 auto; overflow: hidden; }
+    .blog-header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,107,26,0.06) 0%, transparent 70%); pointer-events: none; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin-bottom: 2.5rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--accent); }
+    .back-link i { font-size: 0.6rem; }
+    .blog-cat { font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; display: block; }
+    .blog-title { font-family: var(--heading-font); font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 300; letter-spacing: -0.01em; line-height: 1.12; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.9s 0.2s forwards; }
+    .blog-title em { font-style: italic; color: var(--accent2); }
+    .blog-meta { font-family: var(--mono-font); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 1.5rem; }
+    .blog-meta span::before { content: '·'; margin-right: 1.5rem; }
+    .blog-meta span:first-child::before { display: none; }
+
+    /* BLOG CONTENT */
+    .blog-content { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; padding: 1.5rem 4rem 6rem; }
+
+    /* first paragraph — lead / intro */
+    .blog-content p:first-of-type { font-size: 1.08rem; color: var(--text); font-weight: 300; line-height: 1.95; margin-bottom: 1.75rem; }
+
+    .blog-content p { color: var(--muted); font-size: 0.975rem; line-height: 2; margin-bottom: 1.5rem; font-weight: 300; }
+    .blog-content p strong { color: var(--text); font-weight: 500; }
+
+    /* headings inside post */
+    .blog-content h2 { font-family: var(--heading-font); font-size: 1.8rem; font-weight: 300; color: var(--text); line-height: 1.2; margin: 3rem 0 1rem; }
+    .blog-content h2 em { font-style: italic; color: var(--accent2); }
+    .blog-content h3 { font-family: var(--mono-font); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin: 2.5rem 0 0.75rem; }
+
+    /* pull-quote */
+    .pullquote { border-left: 2px solid var(--accent); padding: 1.2rem 1.75rem; margin: 2.5rem 0; background: rgba(255,107,26,0.04); }
+    .pullquote p { font-family: var(--heading-font); font-size: 1.25rem !important; color: var(--text) !important; font-style: italic; line-height: 1.6 !important; margin: 0 !important; }
+
+    /* divider */
+    .blog-content hr { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* POST NAVIGATION */
+    .blog-nav { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .blog-nav a { font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+    .blog-nav a:hover { color: var(--accent); }
+    .blog-nav .next { text-align: right; }
+
+    /* FOOTER */
+    footer { padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: var(--mono-font); font-size: 0.63rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .footer-back { font-family: var(--mono-font); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+    .footer-back:hover { color: var(--accent); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* CURSOR */
+    .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s, opacity 0.3s; mix-blend-mode: screen; }
+    .cursor.large { width: 40px; height: 40px; opacity: 0.25; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .blog-header { padding: 8rem 1.5rem 3rem; }
+      .blog-content { padding: 1rem 1.5rem 5rem; }
+      .blog-nav { padding: 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Anu <span>Surya</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#featured">Featured</a></li>
+    <li><a href="index.html#portfolio">Portfolio</a></li>
+    <li><a href="index.html#blog" class="active">Blog</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank" rel="noopener" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com/anusurya2403-dot/Projects" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="mailto:anusurya2403@gmail.com" title="Email"><i class="far fa-envelope"></i></a>
+  </div>
+</nav>
+
+<!-- BLOG HEADER -->
+<div class="blog-header">
+  <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+
+  <span class="blog-cat">Satire &amp; Corporate Life</span>
+
+  <h1 class="blog-title">The Paradox of Meetings: <em>Satirical Writing on Mental Olympics</em></h1>
+
+  <div class="blog-meta">
+    <span>Anu Surya</span>
+    <span>June 2025</span>
+    <span>4 min read</span>
+  </div>
+</div>
+
+<!-- BLOG CONTENT -->
+<!-- ══════════════════════════════════════════════════
+     PASTE YOUR FULL BLOG CONTENT BELOW THIS LINE
+     Guidelines:
+       • Use <p> for every paragraph
+       • First <p> is auto-styled as a larger lead paragraph
+       • Use <h2> for section headings (supports <em> for italic)
+       • Use <h3> for sub-headings (styled as small caps label)
+       • Use <div class="pullquote"><p>…</p></div> for key quotes
+       • Use <hr> for visual section breaks
+     ══════════════════════════════════════════════════ -->
+<div class="blog-content">
+
+  <p>
+    The following piece is based on firsthand observation in the corporate trenches. It was born during a real-life meeting where a sudden spike in situational awareness forced me to confront the systematic flaws of our daily routines. Somewhere between the third alignment sync and the fourth revision of a roadmap timeline, I switched into observer detachment mode. I stopped taking notes and just started watching the room — mentally laughing as I realized I wasn't trapped in a project crisis. I was witnessing a high-stakes, professional sport.
+  </p>
+
+  <div class="pullquote">
+    <p>"I realized this is: The Art of Doing Nothing Efficiently."</p>
+  </div>
+
+  <p>
+    In modern organizations, productivity has reached an impressive milestone. We can now take 6 months to decide what we already agreed on in the first meeting. It is a marvel of human coordination.
+  </p>
+
+  <p>
+    The process begins with a simple idea - usually something dangerous like "let's improve efficiency" or "let's ship this faster." Immediately, the system activates its natural defense mechanism: the meeting calendar.
+  </p>
+
+  <h2>The Alignment <em>Spiral</em></h2>
+
+  <p>
+    First comes alignment meeting 1: where we agree we need alignment. Then alignment meeting 2: where we refine the alignment about alignment. By meeting 7, we are dangerously close to execution — so we quickly schedule a workshop to slow things down.
+  </p>
+
+  <h3>Welcome to the Corporate Mental Olympics</h3>
+
+  <p>
+    Here, the core events require zero physical stamina but maximum bureaucratic agility. Teams compete fiercely in Synchronized Nodding while actively zoning out. The Responsibility Relay — the art of passing a hot-potato action item to another department before the call ends — is executed with breathtaking precision. No medals are awarded, but survival is its own reward.
+  </p>
+
+  <p>
+    At no point is the actual work done. That would be premature.
+  </p>
+
+  <hr>
+
+  <h2>The Cult of <em>Slides</em></h2>
+
+  <p>
+    Instead, we invest in something far more valuable: slides. Beautiful, carefully crafted slides that explain why work is important, how work might happen, and what work could look like if we ever decided to do it. Execution, of course, is a sensitive topic. It must not be rushed — unlike planning, which is best done repeatedly.
+  </p>
+
+  <h3>The Inclusive Genius</h3>
+
+  <p>
+    The true genius of this system lies in its inclusivity. Everyone has a voice. Every opinion is valued. Every stakeholder is invited. Even stakeholders who have not read the document are encouraged to comment on it.
+  </p>
+
+  <p>
+    By the time final approval arrives, the original idea has evolved into something safer, duller, and significantly more "aligned." Efficiency may have been lost somewhere along the way, but we have gained something priceless: consensus.
+  </p>
+
+  <div class="pullquote">
+    <p>"And if, by chance, someone asks why nothing has been delivered yet, we can confidently respond: 'We are in the final phase of alignment.'"</p>
+  </div>
+
+</div>
+<!-- ══════════════════════════════════════════════════
+     END OF BLOG CONTENT
+     ══════════════════════════════════════════════════ -->
+
+<!-- POST NAVIGATION -->
+<div class="blog-nav">
+  <!-- ↓ UPDATE: link to previous post, or remove if this is the first -->
+  <a href="index.html#blog"><i class="fas fa-arrow-left"></i> All Posts</a>
+  <!-- ↓ UPDATE: link and title of next post -->
+  <a href="blog-post-2.html" class="next">Misreading The Quiet <i class="fas fa-arrow-right"></i></a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2025 Anu Surya. All rights reserved.</span>
+  <a href="#" class="footer-back"><i class="fas fa-arrow-up"></i> Back to top</a>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+  document.querySelectorAll('a').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('large'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
+  });
+</script>
+</body>
+</html>

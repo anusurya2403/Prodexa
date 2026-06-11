@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Paradox of Meetings | Anu Surya</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0a0a0a; --bg2: #111111; --surface: #181818;
+      --border: rgba(255,255,255,0.08);
+      --accent: #ff6b1a; --accent-light: #ff8c47;
+      --accent2: #e8c98a; --text: #ede8e2; --muted: #7a7570;
+      --heading-font: 'Cormorant Garamond', serif;
+      --body-font: 'DM Sans', sans-serif;
+      --mono-font: 'Space Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--body-font); font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.45;
+    }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 4rem; background: rgba(10,10,10,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--heading-font); font-size: 1.5rem; font-weight: 300; color: var(--text); text-decoration: none; letter-spacing: 0.05em; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-family: var(--mono-font); font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-social { display: flex; gap: 1.2rem; align-items: center; }
+    .nav-social a { color: var(--muted); font-size: 0.9rem; transition: color 0.2s, transform 0.2s; text-decoration: none; }
+    .nav-social a:hover { color: var(--accent); transform: translateY(-2px); }
+
+    /* BLOG HEADER */
+    .blog-header { position: relative; z-index: 1; padding: 9rem 4rem 4rem; max-width: 900px; margin: 0 auto; overflow: hidden; }
+    .blog-header::before { content: ''; position: absolute; top: -80px; right: -80px; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,107,26,0.06) 0%, transparent 70%); pointer-events: none; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; margin-bottom: 2.5rem; transition: color 0.2s; }
+    .back-link:hover { color: var(--accent); }
+    .back-link i { font-size: 0.6rem; }
+    .blog-cat { font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem; display: block; }
+    .blog-title { font-family: var(--heading-font); font-size: clamp(2rem, 4vw, 3.4rem); font-weight: 300; letter-spacing: -0.01em; line-height: 1.12; margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 0.9s 0.2s forwards; }
+    .blog-title em { font-style: italic; color: var(--accent2); }
+    .blog-meta { font-family: var(--mono-font); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 1.5rem; }
+    .blog-meta span::before { content: '·'; margin-right: 1.5rem; }
+    .blog-meta span:first-child::before { display: none; }
+
+    /* BLOG CONTENT */
+    .blog-content { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; padding: 1.5rem 4rem 6rem; }
+
+    /* first paragraph — lead / intro */
+    .blog-content p:first-of-type { font-size: 1.08rem; color: var(--text); font-weight: 300; line-height: 1.95; margin-bottom: 1.75rem; }
+
+    .blog-content p { color: var(--muted); font-size: 0.975rem; line-height: 2; margin-bottom: 1.5rem; font-weight: 300; }
+    .blog-content p strong { color: var(--text); font-weight: 500; }
+
+    /* headings inside post */
+    .blog-content h2 { font-family: var(--heading-font); font-size: 1.8rem; font-weight: 300; color: var(--text); line-height: 1.2; margin: 3rem 0 1rem; }
+    .blog-content h2 em { font-style: italic; color: var(--accent2); }
+    .blog-content h3 { font-family: var(--mono-font); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin: 2.5rem 0 0.75rem; }
+
+    /* pull-quote */
+    .pullquote { border-left: 2px solid var(--accent); padding: 1.2rem 1.75rem; margin: 2.5rem 0; background: rgba(255,107,26,0.04); }
+    .pullquote p { font-family: var(--heading-font); font-size: 1.25rem !important; color: var(--text) !important; font-style: italic; line-height: 1.6 !important; margin: 0 !important; }
+
+    /* divider */
+    .blog-content hr { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* POST NAVIGATION */
+    .blog-nav { position: relative; z-index: 1; max-width: 740px; margin: 0 auto; padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 2rem; }
+    .blog-nav a { font-family: var(--mono-font); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+    .blog-nav a:hover { color: var(--accent); }
+    .blog-nav .next { text-align: right; }
+
+    /* FOOTER */
+    footer { padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: var(--mono-font); font-size: 0.63rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+    .footer-back { font-family: var(--mono-font); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: color 0.2s; }
+    .footer-back:hover { color: var(--accent); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* CURSOR */
+    .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 10000; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s, opacity 0.3s; mix-blend-mode: screen; }
+    .cursor.large { width: 40px; height: 40px; opacity: 0.25; }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .blog-header { padding: 8rem 1.5rem 3rem; }
+      .blog-content { padding: 1rem 1.5rem 5rem; }
+      .blog-nav { padding: 1.5rem; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; padding: 2rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Anu <span>Surya</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#featured">Featured</a></li>
+    <li><a href="index.html#portfolio">Portfolio</a></li>
+    <li><a href="index.html#blog" class="active">Blog</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-social">
+    <a href="https://www.linkedin.com/in/anu-surya-450b21144/" target="_blank" rel="noopener" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+    <a href="https://github.com/anusurya2403-dot/Projects" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="mailto:anusurya2403@gmail.com" title="Email"><i class="far fa-envelope"></i></a>
+  </div>
+</nav>
+
+<!-- BLOG HEADER -->
+<div class="blog-header">
+  <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Blog</a>
+
+  <span class="blog-cat">Psychology</span>
+
+  <h1 class="blog-title">Misreading the Quiet</h1>
+
+  <div class="blog-meta">
+    <span>Anu Surya</span>
+    <span>June 2025</span>
+    <span>4 min read</span>
+  </div>
+</div>
+
+<!-- BLOG CONTENT -->
+<!-- ══════════════════════════════════════════════════
+     PASTE YOUR FULL BLOG CONTENT BELOW THIS LINE
+     Guidelines:
+       • Use <p> for every paragraph
+       • First <p> is auto-styled as a larger lead paragraph
+       • Use <h2> for section headings (supports <em> for italic)
+       • Use <h3> for sub-headings (styled as small caps label)
+       • Use <div class="pullquote"><p>…</p></div> for key quotes
+       • Use <hr> for visual section breaks
+     ══════════════════════════════════════════════════ -->
+<div class="blog-content">
+
+<p>Most systems, whether workplaces, families, or social structures, are not designed to ask how you are. They are designed to ask what you can still deliver. And so people learn, quietly and without announcement, to disappear inside themselves while remaining fully present on the surface.</p>
+
+<p>This piece is not about dramatic breakdowns or visible suffering. It is about the quieter kind. The kind that keeps showing up, keeps functioning, keeps holding things together, while something inside is slowly reorganizing around survival. It is about learning to see that. To question the environments that produce it. And to stop mistaking someone's ability to cope as evidence that everything is fine.</p>
+
+<p>Because silence is not always indifference. Sometimes it is exhaustion wearing a professional face. Sometimes it is the logical conclusion of a system that never once stopped to ask if the person inside it was okay.</p>
+
+<p>These archetypes are to help you see differently. Not to label people. But to recognize them. And perhaps, in recognizing them, to finally begin questioning the systems &amp; groups that made those shapes necessary in the first place.</p>
+
+<h2>The Masked Genius</h2>
+
+<p>Here's something worth sitting with for a moment. Have you ever watched someone incredibly capable just... go quiet? Not checked out. Not gone. Just quieter than they used to be?</p>
+
+<p>That's often what this looks like.</p>
+
+<p>Nothing is actually lost here. The intelligence, the creativity, the depth. It's all still there. What changes is access. The person becomes more selective about where their energy goes. They pull it inward rather than offering it outward.</p>
+
+<p>And from the outside, it's so easy to misread this as withdrawal. As stagnation. When internally, it's usually more like a protective holding pattern.</p>
+
+<p>The person has learned, through lived experience and more than a few quiet disappointments from systems and groups, that open giving is not always met with care or reciprocity, not even the basic courtesy. So, the energy doesn't disappear. It just stops being freely distributed.</p>
+
+<p>Ask yourself this: Is there someone in your life who used to light up a room, contribute ideas freely, show up fully, and now they're just... measured? Careful? What if that isn't indifference? What if it's self-preservation?</p>
+
+<p>Because sometimes, all it takes to shift this state is not pressure. Not expectations. Just permission. Something, or someone, that makes it feel safe enough for expression to begin again, even in small ways.</p>
+
+<h2>The Cynical Tycoon</h2>
+
+<p>This one can be harder to spot, because it looks like strength.</p>
+
+<p>What happens when trust in people, or in environments, gets replaced by reliance on structure? The person starts organizing everything more tightly. Time, decisions, relationships, outcomes. Not necessarily because they crave control for its own sake, but because unpredictability has previously come at a cost.</p>
+
+<p>A real cost.</p>
+
+<p>So, structure becomes a form of safety. Less emotional openness, more calculated distance. Less dependence on others, more dependence on systems.</p>
+
+<p>Here's a question worth pausing on: Do you know someone who used to be warmer, more open, and somewhere along the way they just became... efficient? Managed? Almost transactional?</p>
+
+<p>It's not a lack of feeling. It's a shift in how safety is maintained.</p>
+
+<p>And even here, life doesn't stay static. Certain moments demand direct engagement regardless of how tight the structure is. When that happens, control doesn't disappear, but it softens into action. The system responds, even if cautiously. Even if reluctantly.</p>
+
+<p>There's still someone in there. Always.</p>
+
+<h2>The Broken Protector</h2>
+
+<p>These are often the people nobody worries about, because they're the ones doing the worrying. They became the emotional stabilizers. The practical fixers. The ones who absorbed pressure, solved problems, and kept things running when others couldn't.</p>
+
+<p>And for a long time, they did it well. Because they're capable. Because they care.</p>
+
+<p>But here's the thing about carrying weight for others. It's cumulative. Even strength has limits when it is continuously spent without recovery.</p>
+
+<p>And nobody thinks to ask the strong one if they're okay.</p>
+
+<p>So, their system slows down. Not because care disappears. But because the energy required to keep carrying everything is no longer available in the same way. From the outside, this looks like withdrawal. Disengagement. Maybe even coldness.</p>
+
+<p>Pause here. Is there someone you've been leaning on, really leaning on, who might be running on empty right now? And when did you last ask them how they were doing? Not what they could help you with. Just how they were doing.</p>
+
+<p>Because what begins to change this state is rarely rescue. It's recognition. Being seen as more than what they can provide. Being allowed to exist without being required to carry.</p>
+
+<p>In those moments, something gently reorganizes. Not back into over functioning. Into something more sustainable. Something more honest.</p>
+
+<p>To conclude, for some people, quietness can be a season. Adapting to pressure that has asked too much of them for too long.</p>
+
+<p>And here is what is worth holding onto. People do come back. Not always to who they were before, but to something real. Something that has been tested and is still standing. When the environment shifts, when someone offers genuine recognition rather than another demand, when the weight becomes shared rather than assumed, something moves. Quietly, the way it retreated. But it moves.</p>
+
+<p>However, seeing people clearly is not the same as giving yourself to everyone. Compassion is not a blank cheque. Some people are struggling through a season and will grow through it. Others have settled into patterns that diminish everything around them, not because life broke them, but because they have stopped choosing to do the work of coming back.</p>
+
+<p>Knowing this difference is not coldness. It is one of the most important forms of self-respect.</p>
+
+<p>Reserve your presence, your patience and your genuine care for the people who, when given a little space and recognition, actually use it positively. The ones who are trying, even imperfectly, even slowly. Those are the people a single honest moment can shift something in. Those are the ones worth choosing.</p>
+
+<p>See people with softness. See them with fairness. And then, with that same clarity turned inward, choose deliberately where your energy lives. Because compassion without discernment does not make you kind. It makes you the next person in the room who quietly disappears.</p>
+
+</div>
+<!-- ══════════════════════════════════════════════════
+     END OF BLOG CONTENT
+     ══════════════════════════════════════════════════ -->
+
+<!-- POST NAVIGATION -->
+<div class="blog-nav">
+  <!-- ↓ UPDATE: link to previous post, or remove if this is the first -->
+  <a href="blog-post-1.html"><i class="fas fa-arrow-left"></i> Previous post</a>
+  <!-- ↓ UPDATE: link and title of next post -->
+  <a href="" class="next"> <i class="fas fa-arrow-right"></i></a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2025 Anu Surya. All rights reserved.</span>
+  <a href="#" class="footer-back"><i class="fas fa-arrow-up"></i> Back to top</a>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+  document.querySelectorAll('a').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('large'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('large'));
+  });
+</script>
+</body>
+</html>
